@@ -1,0 +1,7 @@
+<h1>Psykiateroversigt</h1>
+<ul>
+    <% notes.forEach(n => { %>
+        <li><strong><%= n.email %></strong>: <%= n.content %></li>
+    <% }) %>
+</ul>
+<a href="/logout">Log ud</a>

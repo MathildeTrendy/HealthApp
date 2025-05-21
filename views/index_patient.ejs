@@ -1,0 +1,11 @@
+<h1>Velkommen, <%= user.email %></h1>
+<form method="POST" action="/journal/add">
+    <textarea name="note" required></textarea>
+    <button type="submit">Gem</button>
+</form>
+<ul>
+    <% notes.forEach(n => { %>
+        <li><%= n.content %></li>
+    <% }) %>
+</ul>
+<a href="/logout">Log ud</a>
