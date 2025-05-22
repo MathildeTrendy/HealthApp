@@ -82,7 +82,7 @@ CREATE TABLE private_messages (
 ## 🚀 Kør projektet lokalt
 
 ```bash
-npm start
+node app.js 
 ```
 
 Gå derefter til:
