@@ -1,0 +1,10 @@
+<h2>Noter for patient</h2>
+
+<ul>
+    <% notes.forEach(note => { %>
+        <li><%= note.content %></li>
+    <% }) %>
+</ul>
+
+<a href="/psychiatrist/patients">Tilbage til patienter</a>
+<%- include('partials/logout_link') %>

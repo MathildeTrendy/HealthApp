@@ -1,0 +1,11 @@
+<h1><%= role === 'patient' ? 'Patient' : 'Psykiater' %> – vælg loginmetode</h1>
+
+<ul>
+    <li><a href="/auth">Login med Google</a></li>
+    <li><a href="/login/local">Login med email og adgangskode</a></li>
+    <li><a href="/register">Opret ny bruger</a></li>
+</ul>
+
+<form method="GET" action="/">
+    <button type="submit">Tilbage og vælg rolle igen</button>
+</form>

@@ -1,0 +1,12 @@
+<h2>Dine patienter</h2>
+
+<ul>
+    <% patients.forEach(patient => { %>
+        <li>
+            <a href="/psychiatrist/notes/<%= patient.id %>">
+                <%= patient.email %>
+            </a>
+        </li>
+    <% }) %>
+</ul>
+<%- include('partials/logout_link') %>

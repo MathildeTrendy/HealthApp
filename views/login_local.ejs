@@ -1,5 +1,6 @@
 <h2>Login med email</h2>
 <form method="POST" action="/login/local">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <label>Email:</label><br>
     <input type="email" name="email" required><br>
     <label>Password:</label><br>
@@ -7,3 +8,6 @@
     <button type="submit">Log ind</button>
 </form>
 <a href="/register">Ny bruger?</a>
+<form action="/login-options" method="GET" style="margin-top: 10px;">
+    <button type="submit">⬅️ Tilbage</button>
+</form>

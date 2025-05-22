@@ -1,0 +1,11 @@
+<h1>Velkommen til sundhedsdagbogen</h1>
+<form method="POST" action="/choose-role-first">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <label>
+        <input type="radio" name="role" value="patient" required> Jeg er patient
+    </label><br>
+    <label>
+        <input type="radio" name="role" value="psychiatrist"> Jeg er psykiater
+    </label><br><br>
+    <button type="submit">Videre</button>
+</form>
