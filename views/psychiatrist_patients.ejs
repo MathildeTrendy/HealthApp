@@ -1,12 +1,21 @@
-<h2>Dine patienter</h2>
+<div style="max-width: 600px; margin: 50px auto; font-family: Arial, sans-serif;">
+    <h2 style="text-align: center; margin-bottom: 30px;">🧠 Dine patienter</h2>
 
-<ul>
-    <% patients.forEach(patient => { %>
-        <li>
-            <a href="/psychiatrist/notes/<%= patient.id %>">
-                <%= patient.email %>
-            </a>
-        </li>
-    <% }) %>
-</ul>
-<%- include('partials/logout_link') %>
+    <% if (patients.length === 0) { %>
+        <p style="text-align: center;"><em>Ingen patienter tilknyttet.</em></p>
+    <% } else { %>
+        <ul style="list-style: none; padding: 0;">
+            <% patients.forEach(patient => { %>
+                <li style="background: #f9f9f9; padding: 12px 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                    <strong><%= patient.first_name %> <%= patient.last_name %></strong><br>
+                    <a href="/psychiatrist/notes/<%= patient.id %>" style="color: #007BFF; margin-right: 15px;">📄 Se noter</a>
+                    <a href="/messages/<%= patient.id %>" style="color: #28a745;">💬 Chat samtale</a>
+                </li>
+            <% }) %>
+        </ul>
+    <% } %>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/logout" style="color: #dc3545;">Log ud</a>
+    </div>
+</div>

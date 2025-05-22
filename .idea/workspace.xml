@@ -5,23 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fdfd7610-1a5c-491a-843f-36c33e8d7a58" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/middleware/auth.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/routes/psychiatrist.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/login_options.ejs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/partials/logout_link.ejs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/psychiatrist_notes.ejs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/psychiatrist_patients.ejs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/role_choice.ejs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routes/messages.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/encryption.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/inbox.ejs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/messages.ejs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/send_message.ejs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/journal.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/journal.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/psychiatrist.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/psychiatrist.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/index_patient.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/index_patient.ejs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/index_psychiatrist.ejs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/login.ejs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/login_local.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/login_local.ejs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/psychiatrist_notes.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/psychiatrist_notes.ejs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/psychiatrist_patients.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/psychiatrist_patients.ejs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/register.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/register.ejs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

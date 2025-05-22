@@ -1,11 +1,23 @@
-<h1><%= role === 'patient' ? 'Patient' : 'Psykiater' %> – vælg loginmetode</h1>
+<div style="max-width: 600px; margin: 50px auto; font-family: Arial, sans-serif;">
+    <h1 style="text-align: center; margin-bottom: 30px;">
+        <%= role === 'patient' ? 'Patient' : 'Psykiater' %> – vælg loginmetode
+    </h1>
 
-<ul>
-    <li><a href="/auth">Login med Google</a></li>
-    <li><a href="/login/local">Login med email og adgangskode</a></li>
-    <li><a href="/register">Opret ny bruger</a></li>
-</ul>
+    <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 15px;">
+                <a href="/auth" style="display: block; background-color: #4285F4; color: white; text-align: center; padding: 10px; border-radius: 4px; text-decoration: none;">Login med Google</a>
+            </li>
+            <li style="margin-bottom: 15px;">
+                <a href="/login/local" style="display: block; background-color: #6c757d; color: white; text-align: center; padding: 10px; border-radius: 4px; text-decoration: none;">Login med email og adgangskode</a>
+            </li>
+            <li>
+                <a href="/register" style="display: block; background-color: #28a745; color: white; text-align: center; padding: 10px; border-radius: 4px; text-decoration: none;">Opret ny bruger</a>
+            </li>
+        </ul>
+    </div>
 
-<form method="GET" action="/">
-    <button type="submit">Tilbage og vælg rolle igen</button>
-</form>
+    <form method="GET" action="/" style="text-align: center; margin-top: 20px;">
+        <button type="submit" style="background: none; border: none; color: #007BFF; cursor: pointer;">⬅️ Tilbage og vælg rolle igen</button>
+    </form>
+</div>

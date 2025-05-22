@@ -101,20 +101,31 @@ app.get('/register', csrfProtection, async (req, res) => {
 });
 
 app.post('/register', csrfProtection, async (req, res) => {
-    const { email, password, psychiatrist_id } = req.body;
+    const { email, password, first_name, last_name, birth_date, phone_number, start_date, psychiatrist_id } = req.body;
     const role = req.session.chosenRole || 'patient';
     const hashed = await bcrypt.hash(password, 12);
     const existing = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     if (existing.rows.length > 0) return res.send("Bruger findes allerede");
 
     const id = 'local-' + crypto.randomUUID();
-    await pool.query(
-        'INSERT INTO users (id, email, role, password_hash, psychiatrist_id) VALUES ($1, $2, $3, $4, $5)',
-        [id, email, role, hashed, role === 'patient' ? psychiatrist_id : null]
-    );
+
+    const query = role === 'patient'
+        ? `INSERT INTO users (id, email, role, password_hash, first_name, last_name, birth_date, phone_number, start_date, psychiatrist_id)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`
+        : `INSERT INTO users (id, email, role, password_hash, first_name, last_name, birth_date, phone_number)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`;
+
+    const values = role === 'patient'
+        ? [id, email, role, hashed, first_name, last_name, birth_date, phone_number, start_date, psychiatrist_id]
+        : [id, email, role, hashed, first_name, last_name, birth_date, phone_number];
+
+    await pool.query(query, values);
+
     req.login({ id, email, role }, err => {
         if (err) return res.send("Fejl ved login");
-        return res.redirect('/journal');
+        if (role === 'patient') return res.redirect('/journal');
+        if (role === 'psychiatrist') return res.redirect('/psychiatrist/patients');
+        return res.send("Ugyldig rolle");
     });
 });
 
@@ -167,6 +178,10 @@ const journalRoutes = require('./routes/journal');
 const psychiatristRoutes = require('./routes/psychiatrist');
 app.use('/journal', journalRoutes);
 app.use('/psychiatrist', psychiatristRoutes);
+
+// Privatbeskeder
+const messagesRoutes = require('./routes/messages');
+app.use('/messages', messagesRoutes);
 
 // Start server
 const PORT = process.env.PORT || 3000;

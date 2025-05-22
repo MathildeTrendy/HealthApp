@@ -1,13 +1,23 @@
-<h2>Login med email</h2>
-<form method="POST" action="/login/local">
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-    <label>Email:</label><br>
-    <input type="email" name="email" required><br>
-    <label>Password:</label><br>
-    <input type="password" name="password" required><br>
-    <button type="submit">Log ind</button>
-</form>
-<a href="/register">Ny bruger?</a>
-<form action="/login-options" method="GET" style="margin-top: 10px;">
-    <button type="submit">⬅️ Tilbage</button>
-</form>
+<div style="max-width: 600px; margin: 50px auto; font-family: Arial, sans-serif;">
+    <h2 style="text-align: center; margin-bottom: 30px;">Login med email</h2>
+
+    <form method="POST" action="/login/local" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <label for="email" style="display: block; margin-bottom: 5px;">Email:</label>
+        <input type="email" name="email" required style="width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
+
+        <label for="password" style="display: block; margin-bottom: 5px;">Password:</label>
+        <input type="password" name="password" required style="width: 100%; padding: 8px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px;">
+
+        <button type="submit" style="background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Log ind</button>
+    </form>
+
+    <div style="margin-top: 15px; text-align: center;">
+        <a href="/register" style="color: #007BFF;">Ny bruger?</a>
+    </div>
+
+    <form action="/login-options" method="GET" style="text-align: center; margin-top: 10px;">
+        <button type="submit" style="background: none; border: none; color: #007BFF; cursor: pointer;">⬅️ Tilbage</button>
+    </form>
+</div>

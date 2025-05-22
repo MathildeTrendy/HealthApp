@@ -1,15 +1,128 @@
-<h1>Velkommen, <%= user.email %></h1>
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Din journal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            background-color: #f8f8f8;
+        }
 
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .chat-link {
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            background-color: #3498db;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .chat-link:hover {
+            background-color: #2980b9;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .note-card {
+            background-color: #fff;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .note-card small {
+            color: #777;
+        }
+
+        .logout {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <h1>Velkommen, <%= user.first_name %> <%= user.last_name %></h1>
+    <a href="/messages/<%= user.psychiatrist_id %>" class="chat-link">📩 Chat med din psykolog</a>
+</div>
+
+<h2>Skriv en ny note</h2>
 <form method="POST" action="/journal/add">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-    <textarea name="note" required></textarea>
+
+    <label for="subject">Emne:</label>
+    <input type="text" name="subject" id="subject" required>
+
+    <label for="note">Note:</label>
+    <textarea name="note" id="note" required rows="4" placeholder="Skriv din note her..."></textarea>
+
     <button type="submit">Gem</button>
 </form>
 
-<ul>
-    <% notes.forEach(n => { %>
-        <li><%= n.content %></li>
-    <% }) %>
-</ul>
-<%- include('partials/logout_link') %>
+<h2>Dine noter</h2>
 
+<% if (notes.length === 0) { %>
+    <p><em>Du har endnu ikke skrevet nogen noter.</em></p>
+<% } else { %>
+    <% notes.forEach(n => { %>
+        <div class="note-card">
+            <strong><%= n.subject || 'Uden emne' %></strong><br>
+            <small>Skrevet d. <%= new Date(n.created_at).toLocaleDateString('da-DK') %> kl. <%= new Date(n.created_at).toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' }) %></small>
+            <p><%= n.content %></p>
+        </div>
+    <% }) %>
+<% } %>
+
+<div class="logout">
+    <%- include('partials/logout_link') %>
+</div>
+
+</body>
+</html>

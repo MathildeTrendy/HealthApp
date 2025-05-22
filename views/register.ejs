@@ -1,24 +1,46 @@
-<h2>Opret bruger (<%= role %>)</h2>
+<div style="max-width: 600px; margin: 50px auto; font-family: Arial, sans-serif;">
+    <h2 style="text-align: center; margin-bottom: 30px;">Opret bruger (<%= role === 'patient' ? 'Patient' : 'Psykiater' %>)</h2>
 
-<form method="POST" action="/register">
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <form method="POST" action="/register" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-    <label for="email">Email:</label><br>
-    <input type="email" name="email" required><br><br>
+        <label for="first_name" style="display: block; margin-bottom: 5px;">Fornavn:</label>
+        <input type="text" name="first_name" required style="width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
 
-    <label for="password">Adgangskode:</label><br>
-    <input type="password" name="password" required><br><br>
+        <label for="last_name" style="display: block; margin-bottom: 5px;">Efternavn:</label>
+        <input type="text" name="last_name" required style="width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
 
-    <% if (role === 'patient') { %>
-        <label for="psychiatrist">Vælg psykolog:</label><br>
-        <select name="psychiatrist_id" required>
-            <option value="">-- Vælg --</option>
-            <% psychiatrists.forEach(p => { %>
-                <option value="<%= p.id %>"><%= p.email %></option>
-            <% }) %>
-        </select><br><br>
-    <% } %>
+        <label for="birth_date" style="display: block; margin-bottom: 5px;">Fødselsdato:</label>
+        <input type="date" name="birth_date" required style="width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
 
-    <button type="submit">Registrer</button>
-</form>
-<a href="/login-options">⬅️ Tilbage</a>
+        <label for="phone_number" style="display: block; margin-bottom: 5px;">Telefonnummer:</label>
+        <input type="text" name="phone_number" style="width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
+
+        <% if (role === 'patient') { %>
+            <label for="start_date" style="display: block; margin-bottom: 5px;">Startdato hos psykolog:</label>
+            <input type="date" name="start_date" required style="width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
+        <% } %>
+
+        <label for="email" style="display: block; margin-bottom: 5px;">Email:</label>
+        <input type="email" name="email" required style="width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
+
+        <label for="password" style="display: block; margin-bottom: 5px;">Adgangskode:</label>
+        <input type="password" name="password" required style="width: 100%; padding: 8px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px;">
+
+        <% if (role === 'patient') { %>
+            <label for="psychiatrist" style="display: block; margin-bottom: 5px;">Vælg psykolog:</label>
+            <select name="psychiatrist_id" required style="width: 100%; padding: 8px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px;">
+                <option value="">-- Vælg --</option>
+                <% psychiatrists.forEach(p => { %>
+                    <option value="<%= p.id %>"><%= p.email %></option>
+                <% }) %>
+            </select>
+        <% } %>
+
+        <button type="submit" style="background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Registrer</button>
+    </form>
+
+    <form action="/login-options" method="GET" style="text-align: center; margin-top: 15px;">
+        <button type="submit" style="background: none; border: none; color: #007BFF; cursor: pointer;">⬅️ Tilbage</button>
+    </form>
+</div>

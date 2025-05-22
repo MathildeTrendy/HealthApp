@@ -1,10 +1,26 @@
-<h2>Noter for patient</h2>
+<div style="max-width: 700px; margin: 50px auto; font-family: Arial, sans-serif;">
+    <h2 style="text-align: center; margin-bottom: 30px;">📝 Noter fra <%= patient.first_name %> <%= patient.last_name %></h2>
 
-<ul>
-    <% notes.forEach(note => { %>
-        <li><%= note.content %></li>
-    <% }) %>
-</ul>
+    <div style="text-align: center; margin-bottom: 20px;">
+        <a href="/messages/<%= patient.id %>" style="background-color: #007BFF; color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none;">📩 Chat med patient</a>
+    </div>
 
-<a href="/psychiatrist/patients">Tilbage til patienter</a>
-<%- include('partials/logout_link') %>
+    <% if (notes.length === 0) { %>
+        <p style="text-align: center;"><em>Ingen noter endnu.</em></p>
+    <% } else { %>
+        <% notes.forEach(n => { %>
+            <details style="margin-bottom: 15px; padding: 15px; border: 1px solid #ccc; border-radius: 8px; background: #f8f9fa;">
+                <summary style="cursor: pointer;">
+                    <strong><%= n.subject || 'Uden emne' %></strong>
+                    <small style="color: #666;">(skrevet <%= new Date(n.created_at).toLocaleString('da-DK') %>)</small>
+                </summary>
+                <p style="margin-top: 10px;"><%= n.content %></p>
+            </details>
+        <% }) %>
+    <% } %>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/psychiatrist/patients" style="margin-right: 15px; color: #007BFF;">⬅️ Tilbage til patienter</a>
+        <a href="/logout" style="color: #dc3545;">Log ud</a>
+    </div>
+</div>

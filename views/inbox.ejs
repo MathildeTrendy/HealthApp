@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Indbakke</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            padding: 40px;
+            max-width: 700px;
+            margin: auto;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        .message {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .message strong {
+            font-size: 1.1em;
+        }
+        .message small {
+            color: #666;
+            font-size: 0.85em;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+<h2>Indbakke</h2>
+
+<% messages.forEach(m => { %>
+    <div class="message">
+        <strong><%= m.sender %></strong> skrev:<br>
+        <p><em><%= m.content %></em></p>
+        <small><%= new Date(m.created_at).toLocaleString("da-DK") %></small>
+    </div>
+<% }) %>
+
+<a href="/">⬅️ Tilbage</a>
+</body>
+</html>
