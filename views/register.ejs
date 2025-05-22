@@ -1,46 +1,70 @@
 <div style="max-width: 600px; margin: 50px auto; font-family: Arial, sans-serif;">
     <h2 style="text-align: center; margin-bottom: 30px;">Opret bruger (<%= role === 'patient' ? 'Patient' : 'Psykiater' %>)</h2>
 
-    <form method="POST" action="/register" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <form method="POST" action="/register" onsubmit="return validatePassword()" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-        <label for="first_name" style="display: block; margin-bottom: 5px;">Fornavn:</label>
-        <input type="text" name="first_name" required style="width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
+        <label>Fornavn:</label>
+        <input type="text" name="first_name" required style="width: 100%; margin-bottom: 10px;">
 
-        <label for="last_name" style="display: block; margin-bottom: 5px;">Efternavn:</label>
-        <input type="text" name="last_name" required style="width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
+        <label>Efternavn:</label>
+        <input type="text" name="last_name" required style="width: 100%; margin-bottom: 10px;">
 
-        <label for="birth_date" style="display: block; margin-bottom: 5px;">Fødselsdato:</label>
-        <input type="date" name="birth_date" required style="width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
+        <label>Fødselsdato:</label>
+        <input type="date" name="birth_date" required style="width: 100%; margin-bottom: 10px;">
 
-        <label for="phone_number" style="display: block; margin-bottom: 5px;">Telefonnummer:</label>
-        <input type="text" name="phone_number" style="width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
+        <label>Telefonnummer:</label>
+        <input type="text" name="phone_number" style="width: 100%; margin-bottom: 10px;">
 
         <% if (role === 'patient') { %>
-            <label for="start_date" style="display: block; margin-bottom: 5px;">Startdato hos psykolog:</label>
-            <input type="date" name="start_date" required style="width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
+            <label>Startdato hos psykolog:</label>
+            <input type="date" name="start_date" required style="width: 100%; margin-bottom: 10px;">
         <% } %>
 
-        <label for="email" style="display: block; margin-bottom: 5px;">Email:</label>
-        <input type="email" name="email" required style="width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
+        <label>Email:</label>
+        <input type="email" name="email" required style="width: 100%; margin-bottom: 10px;">
 
-        <label for="password" style="display: block; margin-bottom: 5px;">Adgangskode:</label>
-        <input type="password" name="password" required style="width: 100%; padding: 8px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px;">
+        <label>Adgangskode:</label>
+        <input type="password" id="password" name="password" required style="width: 100%; margin-bottom: 10px;">
+        <label>Gentag adgangskode:</label>
+        <input type="password" id="confirm_password" name="confirm_password" required style="width: 100%; margin-bottom: 10px;">
+        <small style="color: #555;">Mindst 12 tegn, ét stort og lille bogstav, ét tal og ét specialtegn</small>
+        <div id="passwordError" style="color: red; margin-top: 5px;"></div>
 
         <% if (role === 'patient') { %>
-            <label for="psychiatrist" style="display: block; margin-bottom: 5px;">Vælg psykolog:</label>
-            <select name="psychiatrist_id" required style="width: 100%; padding: 8px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px;">
+            <label>Vælg psykolog:</label>
+            <select name="psychiatrist_id" required style="width: 100%; margin-bottom: 20px;">
                 <option value="">-- Vælg --</option>
                 <% psychiatrists.forEach(p => { %>
-                    <option value="<%= p.id %>"><%= p.email %></option>
+                    <option value="<%= p.id %>"><%= p.first_name %> <%= p.last_name %></option>
                 <% }) %>
             </select>
         <% } %>
 
-        <button type="submit" style="background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Registrer</button>
+        <button type="submit" style="width: 100%; background: #28a745; color: white; padding: 10px; border: none; border-radius: 4px;">Registrer</button>
     </form>
 
-    <form action="/login-options" method="GET" style="text-align: center; margin-top: 15px;">
-        <button type="submit" style="background: none; border: none; color: #007BFF; cursor: pointer;">⬅️ Tilbage</button>
+    <form method="GET" action="/login-options" style="text-align: center; margin-top: 15px;">
+        <button type="submit" style="background: none; border: none; color: #007BFF;">⬅️ Tilbage</button>
     </form>
 </div>
+
+<script>
+    function validatePassword() {
+        const pw = document.getElementById("password").value;
+        const confirm = document.getElementById("confirm_password").value;
+        const errorBox = document.getElementById("passwordError");
+        const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{12,}$/;
+
+        if (pw !== confirm) {
+            errorBox.textContent = "Adgangskoderne matcher ikke.";
+            return false;
+        }
+        if (!strongRegex.test(pw)) {
+            errorBox.textContent = "Adgangskoden opfylder ikke kravene.";
+            return false;
+        }
+        errorBox.textContent = "";
+        return true;
+    }
+</script>
