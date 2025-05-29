@@ -54,7 +54,7 @@
         const pw = document.getElementById("password").value;
         const confirm = document.getElementById("confirm_password").value;
         const errorBox = document.getElementById("passwordError");
-        const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{12,}$/;
+        const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{12,}$/;
 
         if (pw !== confirm) {
             errorBox.textContent = "Adgangskoderne matcher ikke.";

@@ -45,16 +45,38 @@ passport.use('oidc', new Strategy({
     const id = subject;
     const email = profile.emails?.[0]?.value || '';
     try {
-        const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
-        if (result.rows.length > 0) return done(null, result.rows[0]);
-        return done(null, { id, email, role: null });
+        let result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+        if (result.rows.length === 0) {
+            // Opret bruger med rolle null ved første login
+            await pool.query(
+                'INSERT INTO users (id, email, role) VALUES ($1, $2, $3)',
+                [id, email, null]
+            );
+            result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+        }
+        const user = result.rows[0];
+        // Hvis rolle ikke sat, og session har valgt rolle, opdater rolle i DB
+        if (!user.role && params.session && params.session.chosenRole) {
+            await pool.query('UPDATE users SET role = $1 WHERE id = $2', [params.session.chosenRole, id]);
+            user.role = params.session.chosenRole;
+        }
+        done(null, user);
     } catch (err) {
-        return done(err);
+        done(err);
     }
 }));
 
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((user, done) => done(null, user));
+passport.serializeUser((user, done) => done(null, user.id));
+
+passport.deserializeUser(async (id, done) => {
+    try {
+        const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+        if (result.rows.length === 0) return done(null, false);
+        done(null, result.rows[0]);
+    } catch (err) {
+        done(err);
+    }
+});
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -93,6 +115,7 @@ app.get('/register', csrfProtection, async (req, res) => {
     res.render('register', { csrfToken: req.csrfToken(), role, psychiatrists });
 });
 
+// Opret bruger
 app.post('/register', csrfProtection, async (req, res) => {
     const {
         email, password, confirm_password, first_name, last_name,
@@ -103,7 +126,7 @@ app.post('/register', csrfProtection, async (req, res) => {
         return res.send("Adgangskoderne matcher ikke");
     }
 
-    const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{12,}$/;
+    const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{12,}$/;
     if (!strongPassword.test(password)) {
         return res.send("Adgangskoden opfylder ikke kravene.");
     }
@@ -126,11 +149,15 @@ app.post('/register', csrfProtection, async (req, res) => {
 
     await pool.query(query, values);
 
-    req.login({ id, email, role: req.session.chosenRole }, err => {
+    // Hent hele brugeren fra DB og log ind
+    const userResult = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+    const user = userResult.rows[0];
+    req.login(user, err => {
         if (err) return res.send("Fejl ved login");
-        return res.redirect(req.session.chosenRole === 'patient' ? '/journal' : '/psychiatrist/patients');
+        return res.redirect(user.role === 'patient' ? '/journal' : '/psychiatrist/patients');
     });
 });
+
 
 // Login
 app.get('/login/local', csrfProtection, (req, res) => {
@@ -177,6 +204,84 @@ app.get('/logout', (req, res) => {
 app.use('/journal', require('./routes/journal'));
 app.use('/psychiatrist', require('./routes/psychiatrist'));
 app.use('/messages', require('./routes/messages'));
+
+// Glemt password funktion
+
+// Vis formular til glemt password
+app.get('/forgot-password', csrfProtection, (req, res) => {
+    res.render('forgot_password', { csrfToken: req.csrfToken() });
+});
+
+// Håndter anmodning om nulstilling
+app.post('/forgot-password', csrfProtection, async (req, res) => {
+    const { email } = req.body;
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+
+    if (result.rows.length === 0) {
+        return res.send('Hvis emailen findes, har vi sendt et link til nulstilling.');
+    }
+
+    const user = result.rows[0];
+    const token = crypto.randomBytes(20).toString('hex');
+    const expires = new Date(Date.now() + 3600000); // 1 time
+
+    await pool.query(
+        'UPDATE users SET reset_password_token = $1, reset_password_expires = $2 WHERE email = $3',
+        [token, expires, email]
+    );
+
+    console.log(`Password reset link: http://localhost:3000/reset-password/${token}`);
+
+    res.send('Hvis emailen findes, har vi sendt et link til nulstilling.');
+});
+
+// Vis formular til nyt password
+app.get('/reset-password/:token', csrfProtection, async (req, res) => {
+    const { token } = req.params;
+    const result = await pool.query(
+        'SELECT * FROM users WHERE reset_password_token = $1 AND reset_password_expires > NOW()',
+        [token]
+    );
+
+    if (result.rows.length === 0) {
+        return res.send('Linket er ugyldigt eller er udløbet.');
+    }
+
+    res.render('reset_password', { csrfToken: req.csrfToken(), token });
+});
+
+// Håndter nyt password
+app.post('/reset-password/:token', csrfProtection, async (req, res) => {
+    const { token } = req.params;
+    const { password, confirm_password } = req.body;
+
+    if (password !== confirm_password) {
+        return res.send('Adgangskoderne matcher ikke.');
+    }
+
+    const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{12,}$/;
+    if (!strongPassword.test(password)) {
+        return res.send('Adgangskoden opfylder ikke kravene.');
+    }
+
+    const result = await pool.query(
+        'SELECT * FROM users WHERE reset_password_token = $1 AND reset_password_expires > NOW()',
+        [token]
+    );
+
+    if (result.rows.length === 0) {
+        return res.send('Linket er ugyldigt eller er udløbet.');
+    }
+
+    const hashed = await bcrypt.hash(password, 12);
+
+    await pool.query(
+        'UPDATE users SET password_hash = $1, reset_password_token = NULL, reset_password_expires = NULL WHERE reset_password_token = $2',
+        [hashed, token]
+    );
+
+    res.send('Adgangskode opdateret. Du kan nu logge ind med dit nye password.');
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Running on http://localhost:${PORT}`));
