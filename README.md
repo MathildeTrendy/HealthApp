@@ -20,8 +20,7 @@ Formålet med systemet er at give patienter mulighed for at føre en privat ment
 
 1. **Klon repo**
 ```bash
-git clone https://github.com/din-bruger/sundhedsdagbog.git
-cd sundhedsdagbog
+git clone https://github.com/MathildeTrendy/HealthApp.git
 ```
 
 2. **Installer afhængigheder**
